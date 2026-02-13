@@ -5,7 +5,7 @@
 ## 프로젝트 구조
 
 ```
-causal_video/
+animated-causality/
 ├── .claude/skills/          # Claude Code 스킬
 │   ├── commit-planner/      # 커밋 계획 작성
 │   ├── skill-creator/       # 스킬 생성 가이드
