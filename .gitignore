@@ -1,0 +1,32 @@
+# 3Blue1Brown 참조 자료 (별도 clone)
+/videos
+/captions
+
+# Media/binary files
+**/media/
+**/final/
+**/audio/
+*.mp4
+*.mp3
+*.wav
+
+# Prompts (스킬로 대체됨)
+/prompts
+
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+env/
+venv/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
