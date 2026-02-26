@@ -1,7 +1,7 @@
 #!/bin/bash
 # Mux video and audio files together
 # Usage: ./mux_audio.sh <video.mp4> <audio.mp3> <output.mp4> [--shortest]
-# Example: ./mux_audio.sh render.mp4 narration.mp3 final/output.mp4
+# Example: ./mux_audio.sh render.mp4 narration.mp3 build/final/output.mp4
 
 VIDEO="$1"
 AUDIO="$2"

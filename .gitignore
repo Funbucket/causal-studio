@@ -1,8 +1,12 @@
-# 3Blue1Brown 참조 자료 (별도 clone)
-/videos
-/captions
+# External references (local clone only)
+/3b1b/
 
-# Media/binary files
+# Build outputs
+/_build/
+book/_build/
+videos/*/build/
+
+# Legacy output patterns (kept for compatibility)
 **/media/
 **/final/
 **/audio/
@@ -10,7 +14,7 @@
 *.mp3
 *.wav
 
-# Prompts (스킬로 대체됨)
+# Prompts (skills replaced runtime usage)
 /prompts
 
 # OS

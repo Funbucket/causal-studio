@@ -4,14 +4,14 @@ Scene 구조 기반 내레이션 스크립트 작성 가이드.
 
 ## 목표
 
-- Scene 구조(`scene_outline.md`)를 그대로 유지
+- Scene 구조(`src/scene_outline.md`)를 그대로 유지
 - 씬별 스크립트 파일 생성
 - TTS(ElevenLabs/Piper)로 mp3 변환 가능한 형식
 
 ## 출력 구조
 
 ```
-scripts/
+src/scripts/
 ├── 01_{scene_name}.txt
 ├── 02_{scene_name}.txt
 ├── 03_{scene_name}.txt
@@ -22,7 +22,7 @@ scripts/
 
 - Scene 순서 prefix: `01_`, `02_`, ...
 - snake_case 유지
-- scene_outline.md의 Scene 이름과 일치
+- src/scene_outline.md의 Scene 이름과 일치
 
 ## 스크립트 작성 규칙
 

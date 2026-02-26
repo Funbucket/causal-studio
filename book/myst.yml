@@ -1,0 +1,30 @@
+version: 1
+
+project:
+  title: Causal Studio
+  authors:
+    - name: Causal Studio
+  copyright: '2025'
+  github: https://github.com/Funbucket/causal-studio
+  license: CC-BY-4.0
+  keywords:
+    - causal inference
+    - statistics
+    - data science
+  jupyter:
+    binder:
+      url: https://mybinder.org
+      repo: Funbucket/causal-studio
+      ref: main
+    lite: false
+  toc:
+    - file: intro.md
+    - title: Matching Estimator
+      file: matching/matching.ipynb
+
+site:
+  template: book-theme
+  title: Causal Studio
+  actions:
+    - title: GitHub
+      url: https://github.com/Funbucket/causal-studio

@@ -1,0 +1,13 @@
+# Jupyter Book (2.x - MyST-MD 기반)
+jupyter-book>=2.0.0
+
+# Video Production
+manim>=0.18.0
+
+# Data Science (for notebooks)
+numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+statsmodels

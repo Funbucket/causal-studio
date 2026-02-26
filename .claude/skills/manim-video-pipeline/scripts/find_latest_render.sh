@@ -1,9 +1,9 @@
 #!/bin/bash
-# Find the latest rendered mp4 file in media/videos/
+# Find the latest rendered mp4 file in build/render/videos/
 # Usage: ./find_latest_render.sh [search_dir] [scene_pattern]
-# Example: ./find_latest_render.sh media/videos Scene01
+# Example: ./find_latest_render.sh build/render/videos Scene01
 
-SEARCH_DIR="${1:-media/videos}"
+SEARCH_DIR="${1:-build/render/videos}"
 PATTERN="${2:-}"
 
 if [ -n "$PATTERN" ]; then

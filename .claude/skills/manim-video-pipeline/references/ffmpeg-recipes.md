@@ -6,12 +6,12 @@
 
 ### 최신 렌더 파일 찾기
 ```bash
-find media/videos/ -name "*.mp4" -type f -printf '%T@ %p\n' 2>/dev/null | sort -n | tail -1 | cut -d' ' -f2-
+find build/render/videos/ -name "*.mp4" -type f -printf '%T@ %p\n' 2>/dev/null | sort -n | tail -1 | cut -d' ' -f2-
 ```
 
 ### Scene 이름으로 찾기
 ```bash
-find media/videos/*{SCENE_NAME}* -name "*.mp4" | head -1
+find build/render/videos/*{SCENE_NAME}* -name "*.mp4" | head -1
 ```
 
 ## 2. 오디오 합성 (Mux)
@@ -48,12 +48,12 @@ echo "Audio:" && ffprobe -v error -show_entries format=duration -of default=nopr
 
 ### Step 1: 파일 리스트 생성
 ```bash
-ls final/*_debug.mp4 final/*.mp4 2>/dev/null | sort -t'/' -k2 | uniq | while read f; do echo "file '$f'"; done > /tmp/filelist.txt
+ls build/final/*_debug.mp4 build/final/*.mp4 2>/dev/null | sort -t'/' -k2 | uniq | while read f; do echo "file '$f'"; done > /tmp/filelist.txt
 ```
 
 ### Step 2-A: 무손실 합치기 (동일 코덱/해상도)
 ```bash
-ffmpeg -f concat -safe 0 -i /tmp/filelist.txt -c copy final/{TOPIC}_full.mp4
+ffmpeg -f concat -safe 0 -i /tmp/filelist.txt -c copy build/final/{TOPIC}_full.mp4
 ```
 
 ### Step 2-B: 재인코딩 합치기 (해상도/프레임레이트 다를 때)
@@ -62,7 +62,7 @@ ffmpeg -f concat -safe 0 -i /tmp/filelist.txt \
   -vf "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,fps=30" \
   -c:v libx264 -preset medium -crf 23 \
   -c:a aac -b:a 128k \
-  final/{TOPIC}_full.mp4
+  build/final/{TOPIC}_full.mp4
 ```
 
 ### Step 2-C: filter_complex 사용 (가장 안정적)
@@ -72,19 +72,19 @@ ffmpeg -f concat -safe 0 -i /tmp/filelist.txt \
   -map "[v]" -map 0:a \
   -c:v libx264 -preset medium -crf 23 \
   -c:a aac -b:a 128k \
-  final/{TOPIC}_full.mp4
+  build/final/{TOPIC}_full.mp4
 ```
 
 ## 5. 검증
 
 ### 합본 길이 확인
 ```bash
-ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 final/{TOPIC}_full.mp4
+ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 build/final/{TOPIC}_full.mp4
 ```
 
 ### 개별 영상 길이 합계
 ```bash
-for f in final/*_debug.mp4 final/*.mp4; do
+for f in build/final/*_debug.mp4 build/final/*.mp4; do
   ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$f"
 done | awk '{sum+=$1} END {print sum}'
 ```

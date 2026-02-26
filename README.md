@@ -1,105 +1,129 @@
-# Animated Causality
+# Causal Studio
 
-3Blue1Brown-style animated explanations of causal inference.
+인과추론 교육용 코드북과 Manim 영상 제작을 함께 운영하는 저장소입니다.
 
-## 프로젝트 구조
+## 핵심 구조
 
+```text
+causal_video/
+├── book/                              # Jupyter Book 소스
+│   ├── myst.yml
+│   ├── intro.md
+│   └── matching/
+│       ├── matching.ipynb
+│       └── assets/
+├── videos/                            # 영상 제작 워크스페이스
+│   └── matching/
+│       ├── src/
+│       │   ├── matching.py
+│       │   ├── scene_outline.md
+│       │   └── scripts/
+│       └── build/
+│           ├── audio/
+│           ├── render/
+│           └── final/
+├── .claude/skills/                    # Claude 스킬 원본
+├── .codex/skills/                     # Codex REPO 스코프 스킬
+├── prompts/design/                    # 설계 문서/프롬프트 아카이브
+├── .github/workflows/deploy-book.yml  # Book 배포 워크플로우
+└── requirements.txt
 ```
-animated-causality/
-├── .claude/skills/          # Claude Code 스킬
-│   ├── commit-planner/      # 커밋 계획 작성
-│   ├── skill-creator/       # 스킬 생성 가이드
-│   └── manim-video-pipeline/ # Manim 영상 제작 파이프라인
-├── docs/                    # 문서
-│   └── generate-video-guide.md
-├── matching/                # Matching Estimator 영상
-│   ├── matching.py          # Manim Scene 코드
-│   ├── matching.ipynb       # 원본 개념/데이터
-│   ├── scene_outline.md     # Scene 구조 설계
-│   └── scripts/             # 내레이션 스크립트
-├── videos/                  # (별도 clone) 3Blue1Brown Manim 코드
-└── captions/                # (별도 clone) 3Blue1Brown 캡션
-```
 
-## 시작하기
+## 빠른 시작
 
-### 1. 저장소 클론
+### 1) 의존성 설치
 
 ```bash
-git clone https://github.com/Funbucket/animated-causality.git
-cd animated-causality
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-### 2. 참조 자료 설정 (선택)
+### 2) 로컬 Book 서버 실행
 
-3Blue1Brown 영상의 연출/리듬을 참고하려면, 아래 저장소를 클론하세요:
+Codex 기준:
 
 ```bash
-# Manim 코드 (연출 참고용)
-git clone https://github.com/3b1b/videos.git
-
-# 캡션/트랜스크립트 (리듬 참고용)
-git clone https://github.com/3b1b/captions.git
+$book-serve
 ```
 
-> ⚠️ 참조 영상의 manim 코드는 구버전 API입니다. 연출 아이디어만 참고하고, 실제 코드는 Manim CE 최신 문법으로 작성하세요.
-
-### 3. 의존성 설치
+Claude 기준:
 
 ```bash
-# Manim Community Edition
-pip install manim
-
-# FFmpeg (영상 합성용)
-brew install ffmpeg  # macOS
+/book-serve
 ```
 
-## 영상 제작 워크플로우
+자연어 대안:
+- Codex: `book 로컬 서버 실행해줘`
+- Claude: `book 로컬 서버 실행해줘`
 
-자세한 가이드는 [docs/generate-video-guide.md](docs/generate-video-guide.md) 참조.
-
-### 빠른 시작
+직접 실행:
 
 ```bash
-# 1. 프로젝트 디렉토리 생성
-mkdir -p {topic}/{scripts,audio,final}
-
-# 2. Scene 구조 설계
-# Claude: "{topic}.ipynb 기반으로 scene 구조 설계해줘"
-
-# 3. 스크립트 작성
-# Claude: "scene_outline.md 기반으로 스크립트 작성해줘"
-
-# 4. 오디오 생성 (TTS)
-# ElevenLabs 또는 Piper로 scripts/*.txt → audio/*.mp3
-
-# 5. Scene 코드 작성 & 렌더
-# Claude: "scene 01 코드 작성해줘"
-manim -pql {topic}.py Scene01_{Name}
-
-# 6. 오디오 합성
-ffmpeg -i video.mp4 -i audio.mp3 -c:v copy -c:a aac -shortest output.mp4
-
-# 7. 전체 합본
-# Claude: "전체 영상 합쳐줘"
+cd book
+source ../.venv/bin/activate
+jupyter-book start --port 3000
 ```
 
-## Claude Code 스킬
+### 3) Book 빌드
 
-이 프로젝트는 Claude Code 스킬을 활용합니다:
+```bash
+cd book
+source ../.venv/bin/activate
+jupyter-book build --html
+open _build/html/index.html
+```
 
-| 스킬 | 트리거 | 용도 |
-|-----|--------|-----|
-| `manim-video-pipeline` | "scene 설계", "스크립트 작성", "렌더" | 영상 제작 전 과정 |
-| `commit-planner` | "커밋 계획" | git 변경사항 정리 |
+## 영상 제작 (Skill-First)
 
-## 완성된 영상
+직접 쉘 명령보다 `manim-video-pipeline` 스킬 호출을 기본으로 사용합니다.
 
-### Matching Estimator
-- **주제**: 매칭을 통한 인과 효과 추정
-- **Scene 수**: 10개
-- **총 길이**: 약 3분 16초
+Codex 기준:
+```bash
+$manim-video-pipeline
+```
+
+Claude 기준:
+
+```bash
+/manim-video-pipeline
+```
+
+자연어 대안:
+- Codex: `manim 영상 파이프라인 진행해줘`
+- Claude: `manim 영상 파이프라인 진행해줘`
+
+자연어 + 인자 대안:
+- Codex: `matching 토픽으로 진행하고 ref_video=3b1b/videos/_2020/covid.py ref_transcript=3b1b/captions/2020/exponential-and-epidemics/english/transcript.txt ref_sentence_timings=3b1b/captions/2020/exponential-and-epidemics/english/sentence_timings.json 참고해서 scene 구조 설계해줘`
+- Claude: `matching 토픽으로 진행하고 ref_video=3b1b/videos/_2020/covid.py ref_transcript=3b1b/captions/2020/exponential-and-epidemics/english/transcript.txt ref_sentence_timings=3b1b/captions/2020/exponential-and-epidemics/english/sentence_timings.json 참고해서 scene 구조 설계해줘`
+
+3b1b 참고 인자 포함:
+
+Codex 기준:
+```bash
+$manim-video-pipeline topic=matching ref_video=3b1b/videos/_2020/covid.py ref_transcript=3b1b/captions/2020/exponential-and-epidemics/english/transcript.txt ref_sentence_timings=3b1b/captions/2020/exponential-and-epidemics/english/sentence_timings.json
+```
+
+Claude 기준:
+```bash
+/manim-video-pipeline topic=matching ref_video=3b1b/videos/_2020/covid.py ref_transcript=3b1b/captions/2020/exponential-and-epidemics/english/transcript.txt ref_sentence_timings=3b1b/captions/2020/exponential-and-epidemics/english/sentence_timings.json
+```
+
+## 사용 스킬
+
+| 스킬 | 용도 |
+|---|---|
+| `book-serve` | Jupyter Book 로컬 서버 실행 |
+| `git-commit` | 변경 분석 및 커밋 |
+| `git-pr` | PR 생성 워크플로우 |
+| `manim-video-pipeline` | scene 설계, 스크립트 작성, 렌더/합성/합본 |
+| `pip-install` | `.venv` 설치 + `requirements.txt` 동기화 |
+
+## 참고
+
+- 설계/가이드 문서는 `prompts/design/`에 보관되어 있습니다.
+- `3b1b/`, `videos/*/build/`, `book/_build/`는 로컬 참조/산출물 영역입니다.
 
 ## 라이선스
 
-MIT License
+MIT
