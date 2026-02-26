@@ -28,3 +28,8 @@ site:
   actions:
     - title: GitHub
       url: https://github.com/Funbucket/causal-studio
+  options:
+    hide_footer_links: false
+    logo_text: Causal Studio
+  parts:
+    primary_sidebar_footer: ''

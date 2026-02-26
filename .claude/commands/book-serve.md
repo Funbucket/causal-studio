@@ -9,7 +9,7 @@ Jupyter Book 로컬 서버를 시작하고 브라우저를 연다.
 pkill -f "jupyter-book" 2>/dev/null
 
 # 서버 시작 (백그라운드)
-cd book && source ../.venv/bin/activate && jupyter-book start &
+cd book && source ../.venv/bin/activate && jupyter-book start --port 3000 &
 
 # 브라우저 열기
 sleep 3 && open http://localhost:3000
