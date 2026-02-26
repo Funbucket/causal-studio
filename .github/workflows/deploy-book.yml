@@ -11,6 +11,10 @@ on:
 
   workflow_dispatch:
 
+env:
+  # GitHub Pages project site is served at /<repo-name>
+  BASE_URL: /${{ github.event.repository.name }}
+
 permissions:
   contents: read
   pages: write
