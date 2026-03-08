@@ -1,0 +1,5 @@
+/* Hide Korean pages from sidebar — accessible via in-page language links */
+a.myst-toc-item[href="/intro-ko"],
+a.myst-toc-item[href="/matching-ko"] {
+  display: none !important;
+}
