@@ -18,9 +18,12 @@ project:
       ref: main
     lite: false
   toc:
-    - file: intro.md
-    - title: Matching Estimator
-      file: matching/matching.ipynb
+    - file: intro_en.md
+    - file: intro_ko.md
+    - title: Why Causal Inference?
+      file: why_causal_inference/why_causal_inference_en.ipynb
+    - file: why_causal_inference/why_causal_inference_ko.ipynb
+      hidden: true
 
 site:
   template: book-theme
@@ -29,7 +32,8 @@ site:
     - title: GitHub
       url: https://github.com/Funbucket/causal-studio
   options:
-    hide_footer_links: false
+    hide_footer_links: true
     logo_text: Causal Studio
+    style: ./custom.css
   parts:
     primary_sidebar_footer: ''
