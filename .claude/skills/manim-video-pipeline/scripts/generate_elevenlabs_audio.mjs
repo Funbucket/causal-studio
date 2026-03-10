@@ -132,6 +132,45 @@ async function runFfmpeg(fileListPath, outputPath) {
   });
 }
 
+async function probeDurationSeconds(filePath) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(
+      "ffprobe",
+      [
+        "-v",
+        "error",
+        "-show_entries",
+        "format=duration",
+        "-of",
+        "default=noprint_wrappers=1:nokey=1",
+        filePath,
+      ],
+      { stdio: ["ignore", "pipe", "pipe"] },
+    );
+
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk.toString();
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk.toString();
+    });
+    child.on("close", (code) => {
+      if (code !== 0) {
+        reject(new Error(stderr || `ffprobe failed with code ${code}`));
+        return;
+      }
+      const duration = Number.parseFloat(stdout.trim());
+      if (Number.isNaN(duration)) {
+        reject(new Error(`Unable to parse duration for ${filePath}`));
+        return;
+      }
+      resolve(duration);
+    });
+  });
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) {
@@ -154,6 +193,7 @@ async function main() {
   const scriptPath =
     args.script || path.join(topicDir, "src", "scripts", `${scene}_${sceneName}.txt`);
   const outputPath = path.join(topicDir, "build", "audio", `${scene}_${sceneName}.mp3`);
+  const timingsPath = path.join(topicDir, "build", "audio", `${scene}_${sceneName}.timings.json`);
 
   const text = await readText(scriptPath, args.text);
   if (!text) {
@@ -173,6 +213,7 @@ async function main() {
       sceneName,
       scriptPath,
       outputPath,
+      timingsPath,
       voiceId: VOICE_ID,
       modelId: MODEL_ID,
       outputFormat: OUTPUT_FORMAT,
@@ -208,6 +249,44 @@ async function main() {
     await fs.writeFile(fileListPath, fileList);
     await runFfmpeg(fileListPath, outputPath);
   }
+
+  const timingChunks = [];
+  let cursor = 0;
+  for (let i = 0; i < chunkPaths.length; i += 1) {
+    const duration = await probeDurationSeconds(chunkPaths[i]);
+    const start = cursor;
+    const end = start + duration;
+    timingChunks.push({
+      index: i + 1,
+      text: chunks[i],
+      duration,
+      start,
+      end,
+    });
+    cursor = end;
+  }
+
+  const mergedDuration = await probeDurationSeconds(outputPath);
+  await fs.writeFile(
+    timingsPath,
+    JSON.stringify(
+      {
+        topic,
+        scene,
+        sceneName,
+        scriptPath,
+        outputPath,
+        voiceId: VOICE_ID,
+        modelId: MODEL_ID,
+        outputFormat: OUTPUT_FORMAT,
+        totalDuration: mergedDuration,
+        chunkCount: timingChunks.length,
+        chunks: timingChunks,
+      },
+      null,
+      2,
+    ),
+  );
 
   console.log(outputPath);
 }

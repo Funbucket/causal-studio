@@ -1,5 +1,7 @@
 #!/bin/bash
 # Mux video and audio files together
+# This script does not read *.timings.json or retime scenes.
+# Use it only after the scene render has already been adjusted to the mp3 timing.
 # Usage: ./mux_audio.sh <video.mp4> <audio.mp3> <output.mp4> [--shortest]
 # Example: ./mux_audio.sh preview/code/01_scene_code.mp4 build/audio/01_scene.mp3 preview/mux/01_scene_mux.mp4
 

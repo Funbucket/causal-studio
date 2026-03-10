@@ -7,6 +7,10 @@ description: Start local Jupyter Book preview with minimal commands. Use when as
 
 Use direct commands first.
 
+Notes:
+- Prefer a restart-safe command that does not rely on shell word-splitting for PID handling.
+- If `jupyter-book start` fails with a sandbox port-binding error such as `listen EPERM`, rerun the same command with escalated permissions.
+
 ## Quick Run
 
 ```bash
@@ -21,7 +25,11 @@ fi
 
 source ../.venv/bin/activate
 PORT=3000
-pids=$(lsof -ti tcp:${PORT} 2>/dev/null || true)
-[ -z "$pids" ] || kill $pids
+lsof -ti tcp:${PORT} 2>/dev/null | xargs -r kill
 jupyter-book start --port ${PORT}
 ```
+
+## Why This Form
+
+- `lsof -ti ... | xargs -r kill` handles multiple PIDs safely and avoids zsh newline/word-splitting issues.
+- The command remains minimal while still supporting restart behavior on an already-used port.

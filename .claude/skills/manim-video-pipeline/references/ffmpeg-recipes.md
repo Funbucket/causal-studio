@@ -10,6 +10,8 @@
 - scene별 hq 산출물은 `build/final/` 아래에 둔다.
 - 전체 합본은 여러 Scene이 검수된 뒤 마지막 단계에서만 수행한다.
 - `build/final/`은 scene별 hq와 전체 합본만 저장한다.
+- mux는 타이밍 보정 단계가 아니다. Scene 코드가 이미 mp3와 대체로 맞는 상태인지 확인하는 검수 단계다.
+- `build/audio/{NN}_{scene_name}.timings.json`이 있으면, mux 전에 그 파일을 기준으로 Scene 타이밍을 먼저 맞춘다.
 
 ## 1. 렌더된 mp4 찾기
 
@@ -24,6 +26,10 @@ find build/manim/videos/*{SCENE_NAME}* -name "*.mp4" | head -1
 ```
 
 ## 2. 오디오 합성 (Mux)
+
+주의:
+- 아래 명령은 video/audio를 합칠 뿐, `.timings.json`을 읽어 자동으로 타이밍을 맞추지 않는다.
+- 화면이 음성보다 먼저 끝나면 ffmpeg 옵션을 바꾸기보다 Scene 코드의 `wait`, `run_time`, Beat 경계를 다시 조정한다.
 
 ### 기본 합성
 ```bash
@@ -112,6 +118,7 @@ done | awk '{sum+=$1} END {print sum}'
 1. `WAIT_TAIL` 상수 증가
 2. Beat 사이 `self.wait()` 추가/증가
 3. 애니메이션 `run_time` 증가
+4. `build/audio/{NN}_{scene_name}.timings.json` chunk 기준으로 Beat 재분할
 
 ### 영상이 긴 경우
 1. `WAIT_TAIL` 상수 감소
@@ -120,7 +127,7 @@ done | awk '{sum+=$1} END {print sum}'
 
 ### 허용 오차
 - ±0.5~1초는 허용
-- 그 이상이면 코드 타이밍 조정
+- 그 이상이면 mux 옵션이 아니라 코드 타이밍 조정
 
 ## 7. 디버깅 체크리스트
 
